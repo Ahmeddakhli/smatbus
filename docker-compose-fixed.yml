@@ -1,0 +1,36 @@
+# Fixed docker-compose.yml - removed obsolete 'version' attribute
+# and changed Redis port to avoid conflict
+
+services:
+  crm-mysql:
+    image: mysql:8.0
+    container_name: crm-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: crm_db
+      MYSQL_USER: crm_user
+      MYSQL_PASSWORD: crm_password
+    ports:
+      - "3307:3306"  # Changed from default 3306 to avoid conflicts
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - crm_network
+
+  crm-redis:
+    image: redis:7-alpine
+    container_name: crm-redis
+    ports:
+      - "6380:6379"  # Changed from 6379 to 6380 to avoid port conflict
+    volumes:
+      - redis_data:/data
+    networks:
+      - crm_network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  crm_network:
+    driver: bridge
